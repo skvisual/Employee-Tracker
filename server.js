@@ -19,8 +19,11 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
-  createProduct();
+  createDepartment();
 });
 
-
+function createDepartment() {
+  console.log('Creating new department')
+  var query = connection.query()
+}
   
