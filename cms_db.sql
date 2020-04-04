@@ -1,5 +1,3 @@
-DROP DATABASE IF EXISTS cms_db;
-
 CREATE DATABASE cms_db;
 
 USE cms_db;
@@ -26,6 +24,8 @@ CREATE TABLE employee (
   managerId INTEGER(30),
   PRIMARY KEY (id)
 );
+
+
 
 
 
