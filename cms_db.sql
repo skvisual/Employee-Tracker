@@ -25,7 +25,18 @@ CREATE TABLE employee (
   PRIMARY KEY (id)
 );
 
+-- STARTING INFO FOR DEPARTMENT
+INSERT INTO department (id, name)
+VALUES (1, 'Finance'), (2 'Executive'),(3, 'IT'),(4, 'Admin');
 
+-- STARTING INFOR FOR ROLES
+INSERT INTO roles (id, title, salary, department_id)
+VALUES (1, 'Accountant', 75000, 1),(2, 'Business Analyst', 60000, 2),(3, 'Data Engineer', 70000, 3),(4, 'Executive Director', 2)
+
+
+-- STARTING INFO FOR EMPLOYEES
+INSERT INTO employee (firstName, lastName, roleId, managerId)
+VALUES ('Andrew', 'Appleseed', 10, 100), ('Barry', 'White', 20, 200), ('Charlie', 'Chaplin', 30, 300);
 
 
 
