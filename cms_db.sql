@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS cms_db;
 CREATE DATABASE cms_db;
 
 USE cms_db;
@@ -19,7 +20,6 @@ CREATE TABLE role (
 CREATE TABLE employee (
   id INTEGER(10) AUTO_INCREMENT NOT NULL,
   firstName VARCHAR(30) NOT NULL,
-  title VARCHAR(30) NOT NULL,
   lastName VARCHAR(30) NOT NULL,
   roleId INTEGER(30) NOT NULL,
   managerId INTEGER(30),

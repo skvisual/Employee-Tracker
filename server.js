@@ -17,10 +17,11 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function(err) {
-  if (err) throw err;
-  console.log("connected as id " + connection.threadId + "\n");
+  // if (err) throw err;
+  // console.log("connected as id " + connection.threadId + "\n");
   start();
 });
+
 
 const questions = [
   {
@@ -35,7 +36,7 @@ const questions = [
       'Add Role',
       'Add Employee',
       'Update Employee',
-      'EXIT',
+      'EXIT'
     ],
     name: 'task'
   },
@@ -44,9 +45,9 @@ const questions = [
 function start(){
   inquirer
   .prompt(questions)
-  .then(function(answers){
+  .then(function(answer){
   
-  switch(answers.task){
+  switch(answer){
     case 'View Department':
       viewDepartment();
     break
@@ -92,7 +93,7 @@ function addDepartment() {
       console.log(response.affectedRows + 'department created \n')
     },
   )
-  start();
+  // start();
 }
 
 function addRole(){
@@ -103,7 +104,7 @@ function addRole(){
       console.log(response.affectedRows + 'role created \n')
     },
   )
-  start();
+  // start();
 }
 
 function addEmployee(){
@@ -114,18 +115,19 @@ function addEmployee(){
       console.log(response.affectedRows + 'Employee created \n')
     },
   )
-  start();
+  // start();
 }
 
 function viewDepartment(){
   console.log('Selecting all departments \n');
-  var query = connection.query(
+  connection.query(
     'SELECT * FROM department',
     function(err) {if (err) throw err;
-      console.getTable(response)     
     },
+    console.table(res)     
+
   )
-  start();
+  // start();
 }
 
 function viewRole(){
@@ -133,9 +135,9 @@ function viewRole(){
   var query = connection.query(
     'SELECT * FROM role',
     function(err) {if (err) throw err;
-      console.getTable(response)
+      console.table(response)
   })
-  start();
+  // start();
 }
 
 function updateEmployee(){
@@ -143,8 +145,10 @@ function updateEmployee(){
   var query = connection.query(
     'UPDATE employee SET ? WHERE ?',
     function(err) {if (err) throw err;
-      console.getTable(response.affectedRows + 'Employee information updated \n')
+      console.table(response.affectedRows + 'Employee information updated \n')
   })
-  start();
+  // start();
 }
+
+
 
