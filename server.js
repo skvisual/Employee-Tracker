@@ -12,8 +12,8 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "",
-    database: "ice_creamDB"
+    password: "0177",
+    database: "cms_db"
 });
 
 connection.connect(function(err) {
