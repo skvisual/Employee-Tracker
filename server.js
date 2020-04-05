@@ -1,6 +1,6 @@
-var mysql = require('mysql')
-var inquirer = require('inquirer')
-var console = require('console.table')
+var mysql = require('mysql');
+var inquirer = require('inquirer');
+// var console = require("console.table")
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -17,8 +17,8 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function(err) {
-  // if (err) throw err;
-  // console.log("connected as id " + connection.threadId + "\n");
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId + "\n");
   start();
 });
 
@@ -45,9 +45,9 @@ const questions = [
 function start(){
   inquirer
   .prompt(questions)
-  .then(function(answer){
+  .then(function(answers){
   
-  switch(answer){
+  switch(answers.task){
     case 'View Department':
       viewDepartment();
     break
@@ -87,14 +87,38 @@ function start(){
 function addDepartment() {
   console.log('Creating new department')
 
-  var query = connection.query(
-    'INSERT INTO department SET ? WHERE ?',
-    function(err) {if (err) throw err;
-      console.log(response.affectedRows + 'department created \n')
-    },
+  inquirer
+  .prompt(
+    [
+      {
+        type: 'input',
+        message: 'Please enter the ID of the new department',
+        name: 'id'
+      },
+      {
+        type: 'input',
+        message: 'Enter the name of the new department',
+        name: 'name'
+      },
+    ]
   )
-  // start();
-}
+  .then(function({ id, name }){
+    connection.query(
+      'INSERT INTO department SET ?',
+      {
+        id: id,
+        name: name
+      },
+      function(err, response) {
+        if (err) throw err;
+        console.log(response.affectedRows + 'department created \n');
+
+        start()
+      }
+    )
+  },
+
+  )}
 
 function addRole(){
   console.log('Creating a new role');
@@ -103,8 +127,8 @@ function addRole(){
     function(err) {if (err) throw err;
       console.log(response.affectedRows + 'role created \n')
     },
+    start(),
   )
-  // start();
 }
 
 function addEmployee(){
@@ -114,40 +138,55 @@ function addEmployee(){
     function(err) {if (err) throw err;
       console.log(response.affectedRows + 'Employee created \n')
     },
+    start()
   )
-  // start();
 }
 
 function viewDepartment(){
   console.log('Selecting all departments \n');
   connection.query(
-    'SELECT * FROM department',
-    function(err) {if (err) throw err;
+    "SELECT * FROM department",
+    function(err, response) {
+      if (err) throw err;
+      console.table(response)     
     },
-    console.table(res)     
-
-  )
-  // start();
+    start()
+  );
 }
 
 function viewRole(){
   console.log('Selecting all roles \n');
-  var query = connection.query(
+  connection.query(
     'SELECT * FROM role',
-    function(err) {if (err) throw err;
+    function(err, response) {
+      if (err) throw err;
       console.table(response)
-  })
-  // start();
+  },
+    start() 
+  )
+}
+
+function viewEmployee(){
+  console.log('Viewing all employees \n');
+  connection.query(
+    'SELECT * FROM employee',
+    function(err, response) {
+      if (err) throw err;
+      console.table(response)
+  },
+    start() 
+  )
 }
 
 function updateEmployee(){
   console.log('Updating employee info \n')
   var query = connection.query(
     'UPDATE employee SET ? WHERE ?',
-    function(err) {if (err) throw err;
+    function(err, response) {if (err) throw err;
       console.table(response.affectedRows + 'Employee information updated \n')
-  })
-  // start();
+    },
+    start()
+  )
 }
 
 
