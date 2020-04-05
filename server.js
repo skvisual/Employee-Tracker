@@ -111,25 +111,62 @@ function addDepartment() {
       },
       function(err, response) {
         if (err) throw err;
-        console.log(response.affectedRows + 'department created \n');
+        console.log(response.affectedRows + 'NEW DEPARTMENT \n');
 
         start()
       }
     )
   },
-
-  )}
+  )
+}
 
 function addRole(){
   console.log('Creating a new role');
-  var query = connection.query(
-    'INSERT INTO role SET ? WHERE ?',
-    function(err) {if (err) throw err;
-      console.log(response.affectedRows + 'role created \n')
-    },
-    start(),
+  inquirer
+  .prompt(
+    [
+      {
+        type: 'input',
+        message: 'Please enter ID for the new role',
+        name: 'id'
+      },
+      {
+        type: 'input',
+        message: 'Enter the TITLE of the new role',
+        name: 'title'
+      },
+      {
+        type: 'input',
+        message: 'Please enter the SALARY',
+        name: 'salary'
+      },
+      {
+        type: 'input',
+        message: 'Enter the DEPARTMENT ID',
+        name: 'department_id'
+      }
+    ]
   )
+  .then(function({ id, title, salary, department_id }){
+    connection.query(
+      'INSERT INTO role SET ?',
+      {
+        id: id,
+        title: title,
+        salary: salary,
+        department_id: department_id,
+      },
+      function(err, response) {
+        if (err) throw err;
+        console.log(response.affectedRows + ' NEW ROLE CREATED \n');
+
+        start()
+      }
+    )
+  })
 }
+
+
 
 function addEmployee(){
   console.log('Creating a new employee');
