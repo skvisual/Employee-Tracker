@@ -294,7 +294,7 @@ function returnPrompt(){
     }
   ])
     .then(function({ exitUpdateMenu }){
-      if (exitUpdateMenu === 'YES, I am finished UPDATING employee information'){
+      if (exitUpdateMenu === 'YES, Go to the MAIN MENU'){
         start()
       } else {
         pickEmployeeToUpdate()
@@ -397,42 +397,72 @@ function updateEmployee(employee){
         )
         break
 
-      case 'Employee LAST name':
-        connection.query(
+      case 'Last Name':
+        // console.log(employeeArray.indexOf(employee) + 1)
+        // console.log(employeeArray)
+        // console.log(employee)
+           connection.query(
           'UPDATE employee SET ? WHERE ?',
-          {
-            lastName: updatedLastName,
+          [
+            {
+              lastName: answer.updatedLastName,  
+            },
+            {
+              id: employeeArray.indexOf(employee) + 1
+            }
+  
+          ],
+          function(err, res) {
+            if (err) throw err;
+            // console.log(res.affectedRows + 'Employee FIRST name updated \n')
           },
-          function(err) {if (err) throw err;
-            console.log('Updated Employee LAST name \n')
-            returnPrompt()          
-          }
+          returnPrompt()        
         )
         break
       
-      case 'Employee ROLE ID':
-      connection.query(
-        'UPDATE employee SET ? WHERE ?',
-        {
-          roleId: updatedRoleId,
-        },
-        function(err) {if (err) throw err;
-          console.log('Updated Employee ROLE ID \n')
+      case 'Role ID':
+        console.log(employeeArray.indexOf(employee) + 1)
+        console.log(employeeArray)
+        console.log(employee)
+           connection.query(
+          'UPDATE employee SET ? WHERE ?',
+          [
+            {
+              roleId: answer.updatedRoleId,  
+            },
+            {
+              id: employeeArray.indexOf(employee) + 1
+            }
+  
+          ],
+          function(err, res) {
+            if (err) throw err;
+            // console.log(res.affectedRows + 'Employee FIRST name updated \n')
+          },
           returnPrompt()        
-        }
-      )
+        )
       break
     
-      case 'Employee MANAGER ID':
-        connection.query(
+      case 'Manager ID':
+        console.log(employeeArray.indexOf(employee) + 1)
+        console.log(employeeArray)
+        console.log(employee)
+           connection.query(
           'UPDATE employee SET ? WHERE ?',
-          {
-            managerId: updatedManagerId,
+          [
+            {
+              managerId: answer.updatedManagerId,  
+            },
+            {
+              id: employeeArray.indexOf(employee) + 1
+            }
+  
+          ],
+          function(err, res) {
+            if (err) throw err;
+            // console.log(res.affectedRows + 'Employee FIRST name updated \n')
           },
-          function(err) {if (err) throw err;
-            console.log('Updated Employee MANAGER ID \n')
-            returnPrompt()          
-          }
+          returnPrompt()        
         )
         break
 
