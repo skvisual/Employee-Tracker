@@ -1,6 +1,5 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
-// var console = require("console.table")
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -42,6 +41,9 @@ const questions = [
   },
 ]
 
+
+
+//                                                                          START FUNCTION
 function start(){
   inquirer
   .prompt(questions)
@@ -83,7 +85,7 @@ function start(){
 }
 
 
-
+//                                                                          ADD DEPARTMENT
 function addDepartment() {
   // console.log('Creating new department')
 
@@ -120,6 +122,7 @@ function addDepartment() {
   )
 }
 
+//                                                                            ADD ROLE
 function addRole(){
   // console.log('Creating a new role');
   inquirer
@@ -166,6 +169,7 @@ function addRole(){
   })
 }
 
+//                                                                         ADD EMPLOYEE
 function addEmployee(){
   console.log('Creating a new employee');
 
@@ -212,6 +216,7 @@ function addEmployee(){
   })
 }
 
+//                                                                              VIEW TABLES
 
 function viewDepartment(){
   // console.log('Selecting all departments \n');
@@ -249,6 +254,8 @@ function viewEmployee(){
   )
 }
 
+//                                                     RETURN TO MAIN MENU OR CONTINUE UPDATING EMPLOYEE INFO
+
 function returnPrompt(){
     inquirer
     .prompt([
@@ -257,8 +264,8 @@ function returnPrompt(){
       message: 'RETURN TO MAIN MENU?',
       choices:
       [
-        'YES, I am finished UPDATING employee information',
-        'NO, Take me back to the UPDATE employee menu'
+        'YES, Go to the MAIN MENU',
+        'NO, Take me back to the UPDATE EMPLOYEE MENU'
       ],
       name: 'exitUpdateMenu'
     }
@@ -273,9 +280,11 @@ function returnPrompt(){
   )
 }
 
+
+//                                                                   UPDATE EMPLOYEE INFORMATION
+
 function updateEmployee(){
   // console.log('Updating employee info \n')
-
   inquirer
   .prompt([
     {
@@ -327,7 +336,7 @@ function updateEmployee(){
     switch(answers.updateChoice){
 
       case 'Employee FIRST name':
-        connection.query(
+           connection.query(
           'UPDATE employee SET ? WHERE ?',
           {
             updatedFirstName: updatedFirstName,
