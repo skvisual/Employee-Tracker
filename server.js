@@ -166,18 +166,53 @@ function addRole(){
   })
 }
 
-
-
 function addEmployee(){
   console.log('Creating a new employee');
-  var query = connection.query(
-    'INSERT INTO employee SET ? WHERE ?',
-    function(err) {if (err) throw err;
-      console.log(response.affectedRows + 'Employee created \n')
-    },
-    start()
+
+  inquirer
+  .prompt(
+    [
+      {
+        type: 'input',
+        message: 'Enter the employee FIRST NAME',
+        name: 'firstName'
+      },
+      {
+        type: 'input',
+        message: 'Please enter the employee LAST NAME',
+        name: 'lastName'
+      },
+      {
+        type: 'input',
+        message: 'SELECT the employee ROLE ID',
+        name: 'roleId'
+      },
+      {
+        type: 'input',
+        message: "Enter the employee's MANAGER ID",
+        name: 'managerId'
+      },
+    ]
   )
+  .then(function({ firstName, lastName, roleId, managerId }){
+    connection.query(
+      'INSERT INTO employee SET ?',
+      {
+        firstName: firstName,
+        lastName: lastName,
+        roleId: roleId,
+        managerId: managerId,
+      },
+      function(err, response) {
+        if (err) throw err;
+        console.log(response.affectedRows + ' Employee created \n')
+        start()
+      },
+    )
+  })
 }
+
+
 
 function viewDepartment(){
   console.log('Selecting all departments \n');
