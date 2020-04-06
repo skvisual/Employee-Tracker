@@ -85,7 +85,7 @@ function start(){
 
 
 function addDepartment() {
-  console.log('Creating new department')
+  // console.log('Creating new department')
 
   inquirer
   .prompt(
@@ -121,7 +121,7 @@ function addDepartment() {
 }
 
 function addRole(){
-  console.log('Creating a new role');
+  // console.log('Creating a new role');
   inquirer
   .prompt(
     [
@@ -213,9 +213,8 @@ function addEmployee(){
 }
 
 
-
 function viewDepartment(){
-  console.log('Selecting all departments \n');
+  // console.log('Selecting all departments \n');
   connection.query(
     "SELECT * FROM department",
     function(err, response) {
@@ -227,7 +226,7 @@ function viewDepartment(){
 }
 
 function viewRole(){
-  console.log('Selecting all roles \n');
+  // console.log('Selecting all roles \n');
   connection.query(
     'SELECT * FROM role',
     function(err, response) {
@@ -239,7 +238,7 @@ function viewRole(){
 }
 
 function viewEmployee(){
-  console.log('Viewing all employees \n');
+  // console.log('Viewing all employees \n');
   connection.query(
     'SELECT * FROM employee',
     function(err, response) {
@@ -250,15 +249,140 @@ function viewEmployee(){
   )
 }
 
-function updateEmployee(){
-  console.log('Updating employee info \n')
-  var query = connection.query(
-    'UPDATE employee SET ? WHERE ?',
-    function(err, response) {if (err) throw err;
-      console.table(response.affectedRows + 'Employee information updated \n')
-    },
-    start()
+function returnPrompt(){
+    inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: 'RETURN TO MAIN MENU?',
+      choices:
+      [
+        'YES, I am finished UPDATING employee information',
+        'NO, Take me back to the UPDATE employee menu'
+      ],
+      name: 'exitUpdateMenu'
+    }
+  ])
+    .then(function({ exitUpdateMenu }){
+      if (exitUpdateMenu === 'YES, I am finished UPDATING employee information'){
+        start()
+      } else {
+        updateEmployee()
+      }    
+    }
   )
+}
+
+function updateEmployee(){
+  // console.log('Updating employee info \n')
+
+  inquirer
+  .prompt([
+    {
+      type: 'list',
+      message: 'Select what you want to UPDATE',
+      choices: [
+        'Employee FIRST name',
+        'Employee LAST name',
+        'Employee ROLE ID',
+        'Employee MANAGER ID',
+        'EXIT EMPLOYEE UPDATE MENU'
+      ],
+      name: 'updateChoice'
+    },
+    {
+      type: 'input',
+      message: 'Enter the updated FIRST name',
+      name: 'updatedFirstName',
+      when: function(answers){
+        return answers.updateChoice === 'Employee FIRST name';
+      }
+    },
+    {
+      type: 'input',
+      message: 'Enter the updated LAST name',
+      name: 'updatedLastName',
+      when: function(answers){
+        return answers.updateChoice === 'Employee LAST name';
+      }
+    },
+    {
+      type: 'input',
+      message: 'Enter the update ROLE ID',
+      name: 'updatedRoleId',
+      when: function(answers){
+        return answers.updateChoice === 'Employee ROLE ID';
+      }
+    },
+    {
+      type: 'input',
+      message: 'Enter the updated MANAGER ID',
+      name: 'updatedManagerId',
+      when: function(answers){
+        return answers.updateChoice === 'Employee Manager ID';
+      }
+    },
+  ]).then(function(answers){
+
+    switch(answers.updateChoice){
+
+      case 'Employee FIRST name':
+        connection.query(
+          'UPDATE employee SET ? WHERE ?',
+          {
+            updatedFirstName: updatedFirstName,
+          },
+          function(err, res) {if (err) throw err;
+            console.log(res.affectedRows + 'Employee FIRST name updated \n')
+          },
+          returnPrompt()        
+        )
+        break
+
+      case 'Employee LAST name':
+        connection.query(
+          'UPDATE employee SET ? WHERE ?',
+          {
+            updatedLastName: updatedLastName,
+          },
+          function(err) {if (err) throw err;
+            console.log('Updated Employee LAST name \n')
+            returnPrompt()          
+          }
+        )
+        break
+      
+      case 'Employee ROLE ID':
+      connection.query(
+        'UPDATE employee SET ? WHERE ?',
+        {
+          updatedRoleId: updatedRoleId,
+        },
+        function(err) {if (err) throw err;
+          console.log('Updated Employee ROLE ID \n')
+          returnPrompt()        
+        }
+      )
+      break
+    
+      case 'Employee MANAGER ID':
+        connection.query(
+          'UPDATE employee SET ? WHERE ?',
+          {
+            updatedManagerId: updatedManagerId,
+          },
+          function(err) {if (err) throw err;
+            console.log('Updated Employee MANAGER ID \n')
+            returnPrompt()          
+          }
+        )
+        break
+
+        case 'EXIT EMPLOYEE UPDATE MENU':
+          returnPrompt()                
+        break      
+    }
+  })  
 }
 
 
