@@ -226,9 +226,9 @@ function addEmployee(){
       },
       function(err,res) {
         if (err) throw err;
-        console.log(res.affectedRows + ' Employee created \n')
+        // console.log(res.affectedRows + ' Employee created \n')
         employeeArray.push(JSON.stringify(firstName + ' ' + lastName))
-        console.log(employeeArray)
+        // console.log(employeeArray)
 
         start()
       },
@@ -238,15 +238,30 @@ function addEmployee(){
 
 //                                                                              VIEW TABLES
 
+function returnToMainMenu(){
+  inquirer
+  .prompt([
+    {
+      type: 'confirm',
+      message: 'Return to MAIN MENU?',
+      name: 'mainMenuConfirm'
+    }
+  ]).then(function({mainMenuConfirm}){
+    if (mainMenuConfirm){
+      start()
+    }
+  })
+}
 function viewDepartment(){
   // console.log('Selecting all departments \n');
   connection.query(
     "SELECT * FROM department",
     function(err, response) {
       if (err) throw err;
+      console.log('\n')
       console.table(response)     
     },
-    start()
+    returnToMainMenu()
   );
 }
 
@@ -256,9 +271,10 @@ function viewRole(){
     'SELECT * FROM role',
     function(err, response) {
       if (err) throw err;
+      console.log('\n')
       console.table(response)
   },
-    start() 
+    returnToMainMenu()
   )
 }
 
@@ -268,10 +284,12 @@ function viewEmployee(){
     'SELECT * FROM employee',
     function(err, response){
       if (err) throw err;
+      console.log('\n')
       console.table(response)
       // employeeArray.push(res.firstName)
     },
-    start() 
+    returnToMainMenu()
+ 
 
   )
     
@@ -308,7 +326,7 @@ function returnPrompt(){
 function pickEmployeeToUpdate(){
   // console.log('Updating employee info \n')
   inquirer
-  .prompt([    
+  .prompt([ 
     {
       type: 'list',
       message: 'Select an employee to update',
@@ -421,9 +439,9 @@ function updateEmployee(employee){
         break
       
       case 'Role ID':
-        console.log(employeeArray.indexOf(employee) + 1)
-        console.log(employeeArray)
-        console.log(employee)
+        // console.log(employeeArray.indexOf(employee) + 1)
+        // console.log(employeeArray)
+        // console.log(employee)
            connection.query(
           'UPDATE employee SET ? WHERE ?',
           [
@@ -444,9 +462,9 @@ function updateEmployee(employee){
       break
     
       case 'Manager ID':
-        console.log(employeeArray.indexOf(employee) + 1)
-        console.log(employeeArray)
-        console.log(employee)
+        // console.log(employeeArray.indexOf(employee) + 1)
+        // console.log(employeeArray)
+        // console.log(employee)
            connection.query(
           'UPDATE employee SET ? WHERE ?',
           [
