@@ -21,6 +21,7 @@ connection.connect(function(err) {
   start();
 });
 
+const employeeArray = []
 
 const questions = [
   {
@@ -41,10 +42,27 @@ const questions = [
   },
 ]
 
+var currentEmployee = '';
 
+function popData(){
+  connection.query(
+    'SELECT * FROM employee',
+    function(req, res){
+      for (var i = 0; i < res.length; i++) {
+
+        // employeeArray.push({id: res[i].id, fullName: res[i].firstName + ' ' + res[i].lastName})
+        employeeArray.push(res[i].firstName + ' ' + res[i].lastName)
+
+      }
+      // console.log(employeeArray)
+    }
+  )  
+}
 
 //                                                                          START FUNCTION
 function start(){
+  popData()
+
   inquirer
   .prompt(questions)
   .then(function(answers){
@@ -75,7 +93,7 @@ function start(){
     break
 
     case 'Update Employee':
-      updateEmployee();
+      pickEmployeeToUpdate();
     break
 
     case 'EXIT':
@@ -162,7 +180,6 @@ function addRole(){
       function(err, response) {
         if (err) throw err;
         console.log(response.affectedRows + ' NEW ROLE CREATED \n');
-
         start()
       }
     )
@@ -207,9 +224,12 @@ function addEmployee(){
         roleId: roleId,
         managerId: managerId,
       },
-      function(err, response) {
+      function(err,res) {
         if (err) throw err;
-        console.log(response.affectedRows + ' Employee created \n')
+        console.log(res.affectedRows + ' Employee created \n')
+        employeeArray.push(JSON.stringify(firstName + ' ' + lastName))
+        console.log(employeeArray)
+
         start()
       },
     )
@@ -246,12 +266,15 @@ function viewEmployee(){
   // console.log('Viewing all employees \n');
   connection.query(
     'SELECT * FROM employee',
-    function(err, response) {
+    function(err, response){
       if (err) throw err;
       console.table(response)
-  },
+      // employeeArray.push(res.firstName)
+    },
     start() 
+
   )
+    
 }
 
 //                                                     RETURN TO MAIN MENU OR CONTINUE UPDATING EMPLOYEE INFO
@@ -274,75 +297,101 @@ function returnPrompt(){
       if (exitUpdateMenu === 'YES, I am finished UPDATING employee information'){
         start()
       } else {
-        updateEmployee()
+        pickEmployeeToUpdate()
       }    
     }
   )
 }
 
 
-//                                                                   UPDATE EMPLOYEE INFORMATION
-
-function updateEmployee(){
+//                                                                  UPDATE EMPLOYEE INFORMATION
+function pickEmployeeToUpdate(){
   // console.log('Updating employee info \n')
   inquirer
-  .prompt([
+  .prompt([    
+    {
+      type: 'list',
+      message: 'Select an employee to update',
+      name: 'employeeToUpdate',
+      choices: employeeArray,
+    }
+  ]).then(function({employeeToUpdate}){
+    // console.log('hi', employeeToUpdate)
+    updateEmployee(employeeToUpdate)
+  }
+  )
+}
+
+function updateEmployee(employee){
+    // console.log('Updating employee info \n')
+  inquirer
+  .prompt([   
     {
       type: 'list',
       message: 'Select what you want to UPDATE',
+      name: 'updateChoice',
       choices: [
-        'Employee FIRST name',
-        'Employee LAST name',
-        'Employee ROLE ID',
-        'Employee MANAGER ID',
-        'EXIT EMPLOYEE UPDATE MENU'
-      ],
-      name: 'updateChoice'
-    },
+        'First Name',
+        'Last Name',
+        'Role ID',
+        'Manager ID'
+      ]      
+    },    
     {
       type: 'input',
       message: 'Enter the updated FIRST name',
       name: 'updatedFirstName',
-      when: function(answers){
-        return answers.updateChoice === 'Employee FIRST name';
+      when: function(answer){
+        return answer.updateChoice === 'First Name'
       }
     },
     {
       type: 'input',
       message: 'Enter the updated LAST name',
       name: 'updatedLastName',
-      when: function(answers){
-        return answers.updateChoice === 'Employee LAST name';
+      when: function(answer){
+        return answer.updateChoice === 'Last Name';
       }
     },
     {
       type: 'input',
       message: 'Enter the update ROLE ID',
       name: 'updatedRoleId',
-      when: function(answers){
-        return answers.updateChoice === 'Employee ROLE ID';
+      when: function(answer){
+        return answer.updateChoice === 'Role ID';
       }
     },
     {
       type: 'input',
       message: 'Enter the updated MANAGER ID',
       name: 'updatedManagerId',
-      when: function(answers){
-        return answers.updateChoice === 'Employee Manager ID';
+      when: function(answer){
+        return answer.updateChoice === 'Manager ID';
       }
     },
-  ]).then(function(answers){
+  ]).then(function(answer){
+    console.log(answer)
 
-    switch(answers.updateChoice){
+    switch(answer.updateChoice){
 
-      case 'Employee FIRST name':
+      case 'First Name':
+        console.log(employeeArray.indexOf(employee) + 1)
+        console.log(employeeArray)
+        console.log(employee)
            connection.query(
           'UPDATE employee SET ? WHERE ?',
-          {
-            updatedFirstName: updatedFirstName,
-          },
-          function(err, res) {if (err) throw err;
-            console.log(res.affectedRows + 'Employee FIRST name updated \n')
+          [
+            {
+              firstName: answer.updatedFirstName,  
+            },
+            {
+              id: employeeArray.indexOf(employee) + 1
+            }
+  
+          ],
+          function(err, res) {
+            if (err) throw err;
+            // console.log(res.affectedRows + 'Employee FIRST name updated \n')
           },
           returnPrompt()        
         )
@@ -352,7 +401,7 @@ function updateEmployee(){
         connection.query(
           'UPDATE employee SET ? WHERE ?',
           {
-            updatedLastName: updatedLastName,
+            lastName: updatedLastName,
           },
           function(err) {if (err) throw err;
             console.log('Updated Employee LAST name \n')
@@ -365,7 +414,7 @@ function updateEmployee(){
       connection.query(
         'UPDATE employee SET ? WHERE ?',
         {
-          updatedRoleId: updatedRoleId,
+          roleId: updatedRoleId,
         },
         function(err) {if (err) throw err;
           console.log('Updated Employee ROLE ID \n')
@@ -378,7 +427,7 @@ function updateEmployee(){
         connection.query(
           'UPDATE employee SET ? WHERE ?',
           {
-            updatedManagerId: updatedManagerId,
+            managerId: updatedManagerId,
           },
           function(err) {if (err) throw err;
             console.log('Updated Employee MANAGER ID \n')
