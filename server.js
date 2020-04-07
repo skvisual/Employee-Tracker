@@ -42,7 +42,7 @@ const questions = [
   },
 ]
 
-var currentEmployee = '';
+// var currentEmployee = '';
 
 function popData(){
   connection.query(
@@ -57,6 +57,11 @@ function popData(){
       // console.log(employeeArray)
     }
   )  
+}
+
+function exitProgram(){
+  console.log('SESSION CLOSED, See you next time!')
+  process.exit(-1)
 }
 
 //                                                                          START FUNCTION
@@ -97,7 +102,8 @@ function start(){
     break
 
     case 'EXIT':
-      return 
+      exitProgram()
+    break
   }
 })
 }
@@ -243,7 +249,7 @@ function returnToMainMenu(){
   .prompt([
     {
       type: 'confirm',
-      message: 'Return to MAIN MENU?',
+      message: 'Return to MAIN MENU',
       name: 'mainMenuConfirm'
     }
   ]).then(function({mainMenuConfirm}){
@@ -259,9 +265,9 @@ function viewDepartment(){
     function(err, response) {
       if (err) throw err;
       console.log('\n')
-      console.table(response)     
+      console.table(response)
+      returnToMainMenu()     
     },
-    returnToMainMenu()
   );
 }
 
@@ -273,26 +279,25 @@ function viewRole(){
       if (err) throw err;
       console.log('\n')
       console.table(response)
+      returnToMainMenu()
   },
-    returnToMainMenu()
   )
 }
 
 function viewEmployee(){
   // console.log('Viewing all employees \n');
-  connection.query(
-    'SELECT * FROM employee',
+  return connection.query(
+    'SELECT employee.id, employee.firstName, employee.lastName, role.title FROM employee LEFT JOIN role on employee.roleid = role.id',
     function(err, response){
       if (err) throw err;
       console.log('\n')
       console.table(response)
+      returnToMainMenu()
       // employeeArray.push(res.firstName)
     },
-    returnToMainMenu()
- 
+    // returnToMainMenu()
 
-  )
-    
+  )    
 }
 
 //                                                     RETURN TO MAIN MENU OR CONTINUE UPDATING EMPLOYEE INFO
@@ -393,9 +398,9 @@ function updateEmployee(employee){
     switch(answer.updateChoice){
 
       case 'First Name':
-        console.log(employeeArray.indexOf(employee) + 1)
-        console.log(employeeArray)
-        console.log(employee)
+        // console.log(employeeArray.indexOf(employee) + 1)
+        // console.log(employeeArray)
+        // console.log(employee)
            connection.query(
           'UPDATE employee SET ? WHERE ?',
           [
@@ -407,7 +412,7 @@ function updateEmployee(employee){
             }
   
           ],
-          function(err, res) {
+          function(err) {
             if (err) throw err;
             // console.log(res.affectedRows + 'Employee FIRST name updated \n')
           },
