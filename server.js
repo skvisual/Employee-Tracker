@@ -137,7 +137,7 @@ function addDepartment() {
       },
       function(err, response) {
         if (err) throw err;
-        console.log(response.affectedRows + 'NEW DEPARTMENT \n');
+        // console.log(response.affectedRows + 'NEW DEPARTMENT \n');
 
         start()
       }
@@ -185,7 +185,7 @@ function addRole(){
       },
       function(err, response) {
         if (err) throw err;
-        console.log(response.affectedRows + ' NEW ROLE CREATED \n');
+        // console.log(response.affectedRows + ' NEW ROLE CREATED \n');
         start()
       }
     )
@@ -338,9 +338,9 @@ function pickEmployeeToUpdate(){
       name: 'employeeToUpdate',
       choices: employeeArray,
     }
-  ]).then(function({employeeToUpdate}){
+  ]).then(function(data){
     // console.log('hi', employeeToUpdate)
-    updateEmployee(employeeToUpdate)
+    updateEmployee(data.employeeToUpdate)
   }
   )
 }
